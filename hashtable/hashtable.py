@@ -14,15 +14,19 @@ MIN_CAPACITY = 8
 
 class HashTable:
     """
-    A hash table that with `capacity` buckets
+    A hash table with `capacity` buckets
     that accepts string keys
 
     Implement this.
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        if capacity < MIN_CAPACITY:
+            self.capactiy = MIN_CAPACITY
+            self.buckets = [None]*MIN_CAPACITY
+        else:
+            self.capacity = capacity
+            self.buckets = [None]*capacity    
 
     def get_num_slots(self):
         """
@@ -34,7 +38,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -46,14 +50,19 @@ class HashTable:
         # Your code here
 
 
+    ''' 
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
 
         Implement this, and/or DJB2.
         """
+        bytes = str(s).encode()
 
-        # Your code here
+        for b in bytes:
+            hash := hash* 
+    '''
+
 
 
     def djb2(self, key):
@@ -62,7 +71,11 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        key = str(key)
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+        return hash
 
 
     def hash_index(self, key):
@@ -81,7 +94,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # find the index
+        index = self.hash_index(key)
+        # create a hash entry object
+        hash_obj = HashTableEntry(key=key, value=value)
+        # set the next value to the index plus 1
+        # hash_obj.next = self.buckets[index+1]
+        # set the index to the hash_obj
+        self.buckets[index] = hash_obj
 
 
     def delete(self, key):
@@ -92,7 +112,10 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # find the index
+        index = self.hash_index(key)
+        # replace the object at the indicated index with None
+        self.buckets[index] = None
 
 
     def get(self, key):
@@ -103,7 +126,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        index = self.hash_index(key)
+
+        return self.buckets[index].key, self.buckets[index].value
 
 
     def resize(self, new_capacity):
@@ -113,7 +138,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        pass
 
 
 
