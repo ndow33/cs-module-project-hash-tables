@@ -50,31 +50,23 @@ class HashTable:
         # Your code here
 
 
-    ''' 
+     
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
-
         Implement this, and/or DJB2.
         """
-        bytes = str(s).encode()
-
-        for b in bytes:
-            hash := hash* 
-    '''
-
-
-
-    def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
-        """
-        hash = 5381
-        key = str(key)
-        for x in key:
-            hash = (( hash << 5) + hash) + ord(x)
+        # $%$Start
+        # 64-bit constants
+        FNV_offset_basis_64 = 0xcbf29ce484222325
+        FNV_prime_64 = 0x100000001b3
+        # Cast the key to a string and get bytes
+        str_key = str(key).encode()
+        hash = FNV_offset_basis_64
+        for b in str_key:
+            hash *= FNV_prime_64
+            hash ^= b
+            hash &= 0xffffffffffffffff  # 64-bit hash
         return hash
 
 
@@ -83,8 +75,9 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        index = self.fnv1(key) % self.capacity
+        return index
+
 
     def put(self, key, value):
         """
@@ -98,8 +91,6 @@ class HashTable:
         index = self.hash_index(key)
         # create a hash entry object
         hash_obj = HashTableEntry(key=key, value=value)
-        # set the next value to the index plus 1
-        # hash_obj.next = self.buckets[index+1]
         # set the index to the hash_obj
         self.buckets[index] = hash_obj
 
@@ -115,7 +106,7 @@ class HashTable:
         # find the index
         index = self.hash_index(key)
         # replace the object at the indicated index with None
-        self.buckets[index] = None
+        self.buckets[index].value = None
 
 
     def get(self, key):
@@ -128,7 +119,7 @@ class HashTable:
         """
         index = self.hash_index(key)
 
-        return self.buckets[index].key, self.buckets[index].value
+        return self.buckets[index].value
 
 
     def resize(self, new_capacity):
@@ -161,8 +152,11 @@ if __name__ == "__main__":
     print("")
 
     # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+        # print(ht.get(f"line_{i}"))
+    
+    for i in range(ht.capacity):
+        print(ht.buckets[i].key, ht.buckets[i].value)
 
     # Test resizing
     old_capacity = ht.get_num_slots()
