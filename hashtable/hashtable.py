@@ -47,7 +47,7 @@ class HashTable:
         Return the load factor for this hash table.
         Implement this.
         """
-        # Your code here
+        return self.entries/self.capacity
 
 
      
@@ -99,9 +99,11 @@ class HashTable:
             # store the linked list at the index of the hash table
             self.buckets[index] = ll
 
+            # update entries
+            self.entries += 1
+
         # if there is a linked list of hash table entries at the index
         else:
-            
             # get the head hash entry
             cur = self.buckets[index].head
             # traverse the linked list
@@ -118,6 +120,8 @@ class HashTable:
             # if there are no matches
             # insert the hash entry at the head of the list
             self.buckets[index].insert_at_head(hash_obj)
+            # update the entries
+            self.entries += 1
 
 
             
@@ -141,6 +145,8 @@ class HashTable:
             if cur.key == key:
                 val = cur.value
                 cur.value = None
+                # decrement self.entries
+                self.entries -= 1
                 return val
             else:
                 cur = cur.next
@@ -178,7 +184,21 @@ class HashTable:
         rehashes all key/value pairs.
         Implement this.
         """
-        pass
+        # Create a new hash table with new_capacity
+        new_table = HashTable(new_capacity)
+        # loop through each linked list in the table
+        for index in self.buckets:
+            # if there is a linked list
+            if self.buckets[index] is not None:
+                # loop through it and put each hash entry 
+                # into the new table at its proper index
+                cur = self.buckets[index].head
+                while cur is not None:
+                    new_table.put(cur.key, cur.value)
+
+
+
+
 
 
 
