@@ -187,7 +187,7 @@ class HashTable:
         # Create a new hash table with new_capacity
         new_table = HashTable(new_capacity)
         # loop through each linked list in the table
-        for index in self.buckets:
+        for index in range(self.capacity):
             # if there is a linked list
             if self.buckets[index] is not None:
                 # loop through it and put each hash entry 
@@ -195,6 +195,10 @@ class HashTable:
                 cur = self.buckets[index].head
                 while cur is not None:
                     new_table.put(cur.key, cur.value)
+                    cur = cur.next
+        
+        self = new_table
+        self.capacity = new_capacity
 
 
 
