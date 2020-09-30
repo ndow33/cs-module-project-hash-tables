@@ -29,7 +29,17 @@ for word in words:
         counter += 1   
 
 
-# TODO: construct 5 random sentences
-# Your code here
-
-print(d)
+# TODO: construct 5 random sentences of 10 words each
+for x in range(0,5):
+    # create an empty string
+    s = ''
+    # get a random word
+    rando = words[random.randint(0, len(words)-1)]
+    s = s + rando
+    for x in range(0,10):
+        # retrieve that random word's possible values from the dictionary
+        next_word = d[rando][random.randint(0, len(d[rando])-1)]
+        s = s + ' ' + next_word
+        rando = next_word
+    
+    print(s)
