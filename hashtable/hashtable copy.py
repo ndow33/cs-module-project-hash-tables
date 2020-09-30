@@ -1,5 +1,3 @@
-from llist import LinkedList
-
 class HashTableEntry:
     """
     Linked List hash table key/value pair
@@ -27,9 +25,7 @@ class HashTable:
             self.buckets = [None]*MIN_CAPACITY
         else:
             self.capacity = capacity
-            self.buckets = [None]*capacity
-        # keeps track of how many hash table entries we have
-        self.entries = 0    
+            self.buckets = [None]*capacity    
 
     def get_num_slots(self):
         """
@@ -87,41 +83,12 @@ class HashTable:
         """
         # find the index
         index = self.hash_index(key)
-        # create a hash table entry object
+        # create a hash entry object
         hash_obj = HashTableEntry(key=key, value=value)
-
-        # if there is no hash table entry at the index
-        if self.buckets[index] is None:
-            # create a linked list
-            ll = LinkedList()
-            # set the hash table entry as the head
-            ll.head = hash_obj
-            # store the linked list at the index of the hash table
-            self.buckets[index] = ll
-
-        # if there is a linked list of hash table entries at the index
-        else:
-            
-            # get the head hash entry
-            cur = self.buckets[index].head
-            # traverse the linked list
-            while cur is not None:
-                # If the key has been used before
-                if cur.key == key:
-                    # update the value
-                    cur.value = value
-                    # exit method
-                    return
-                # move onto the next hash entry
-                else:
-                    cur = cur.next
-            # if there are no matches
-            # insert the hash entry at the head of the list
-            self.buckets[index].insert_at_head(hash_obj)
+        # set the index to the hash_obj
+        self.buckets[index] = hash_obj
 
 
-            
-        
     def delete(self, key):
         """
         Remove the value stored with the given key.
@@ -130,21 +97,8 @@ class HashTable:
         """
         # find the index
         index = self.hash_index(key)
-
-        # is there anything there
-        if self.buckets[index] is None:
-            return None
-        
-        # if there is something there...
-        cur = self.buckets[index].head
-        while cur is not None:
-            if cur.key == key:
-                val = cur.value
-                cur.value = None
-                return val
-            else:
-                cur = cur.next
-        print('Cannot delete: key not found!')
+        # replace the object at the indicated index with None
+        self.buckets[index].value = None
 
 
     def get(self, key):
@@ -154,22 +108,8 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        # is there anything there
-        if self.buckets[index] is None:
-            return None
 
-        # if there is something there...
-        # traverse the linked list until we find a matching key
-        cur = self.buckets[index].head
-        while cur is not None:
-            # if cur.key is the same as the given key
-            if cur.key == key:
-                # return the value of cur    
-                return cur.value
-            else:
-                cur = cur.next
-        # if there are no matches, return none
-        return None
+        return self.buckets[index].value
 
 
     def resize(self, new_capacity):
@@ -205,7 +145,7 @@ if __name__ == "__main__":
         # print(ht.get(f"line_{i}"))
     
     for i in range(ht.capacity):
-        print(ht.buckets[i])
+        print(ht.buckets[i].key, ht.buckets[i].value)
 
     # Test resizing
     old_capacity = ht.get_num_slots()

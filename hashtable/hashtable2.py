@@ -18,25 +18,29 @@ class HashTable:
     """
     A hash table with `capacity` buckets
     that accepts string keys
+
     Implement this.
     """
 
     def __init__(self, capacity):
+        # create empty linked lists for each space
+        ll = LinkedList()
+
         if capacity < MIN_CAPACITY:
             self.capactiy = MIN_CAPACITY
-            self.buckets = [None]*MIN_CAPACITY
+            self.buckets = [ll]*MIN_CAPACITY
         else:
             self.capacity = capacity
-            self.buckets = [None]*capacity
-        # keeps track of how many hash table entries we have
-        self.entries = 0    
+            self.buckets = [ll]*capacity    
 
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
         table data. (Not the number of items stored in the hash table,
         but the number of slots in the main list.)
+
         One of the tests relies on this.
+
         Implement this.
         """
         return self.capacity
@@ -45,6 +49,7 @@ class HashTable:
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
+
         Implement this.
         """
         # Your code here
@@ -82,100 +87,93 @@ class HashTable:
     def put(self, key, value):
         """
         Store the value with the given key.
+
         Hash collisions should be handled with Linked List Chaining.
+
         Implement this.
         """
         # find the index
         index = self.hash_index(key)
-        # create a hash table entry object
-        hash_obj = HashTableEntry(key=key, value=value)
+        # set variable to current linked list object
+        ll = self.buckets[index]
+        # if there is nothing at that index
+        if ll.head == None:
+            # create a hash entry object
+            hash_obj = HashTableEntry(key=key, value=value)
+            # insert the hash_obj as the head of the linked list
+            ll.insert_at_head(hash_obj)
 
-        # if there is no hash table entry at the index
-        if self.buckets[index] is None:
-            # create a linked list
-            ll = LinkedList()
-            # set the hash table entry as the head
-            ll.head = hash_obj
-            # store the linked list at the index of the hash table
-            self.buckets[index] = ll
-
-        # if there is a linked list of hash table entries at the index
+        # if there is something at that index
         else:
+            cur = ll.head
             
-            # get the head hash entry
-            cur = self.buckets[index].head
-            # traverse the linked list
+            # search the linked list at the index for the key
             while cur is not None:
-                # If the key has been used before
+                # if the key is found, 
                 if cur.key == key:
-                    # update the value
+                    # overwrite the value stored there
                     cur.value = value
-                    # exit method
-                    return
-                # move onto the next hash entry
-                else:
-                    cur = cur.next
-            # if there are no matches
-            # insert the hash entry at the head of the list
-            self.buckets[index].insert_at_head(hash_obj)
-
-
+                # otherwise, move to the next hash table entry
+                cur = cur.next
             
-        
+            # if there are no duplicates, 
+            # create a hash entry object
+            hash_obj = HashTableEntry(key=key, value=value)
+
+            # insert the hash_obj at the head of the linked list
+            ll.insert_at_head(hash_obj)
+
+
+
+
+
     def delete(self, key):
         """
         Remove the value stored with the given key.
+
         Print a warning if the key is not found.
+
         Implement this.
         """
         # find the index
         index = self.hash_index(key)
-
-        # is there anything there
-        if self.buckets[index] is None:
-            return None
-        
-        # if there is something there...
-        cur = self.buckets[index].head
-        while cur is not None:
-            if cur.key == key:
-                val = cur.value
-                cur.value = None
-                return val
-            else:
-                cur = cur.next
-        print('Cannot delete: key not found!')
+        # replace the value of the object at the indicated index with None
+        self.buckets[index].value = None
 
 
     def get(self, key):
         """
         Retrieve the value stored with the given key.
+
         Returns None if the key is not found.
+
         Implement this.
         """
+        # get the index of the key
         index = self.hash_index(key)
-        # is there anything there
-        if self.buckets[index] is None:
+        # get the current hash_obj at that index
+        cur = self.buckets[index].head
+        # if cur is a hash_obj
+        if cur is not None:
+            # traverse the list looking for the key
+            # use the find method
+            found = self.buckets[index].find(key)
+            if found == None:
+                return None
+            else:
+                return found           
+        # if cur is not a hash_obj
+        else:
             return None
 
-        # if there is something there...
-        # traverse the linked list until we find a matching key
-        cur = self.buckets[index].head
-        while cur is not None:
-            # if cur.key is the same as the given key
-            if cur.key == key:
-                # return the value of cur    
-                return cur.value
-            else:
-                cur = cur.next
-        # if there are no matches, return none
-        return None
+        return self.buckets[index].head.value
 
 
     def resize(self, new_capacity):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
+
         Implement this.
         """
         pass
@@ -204,8 +202,12 @@ if __name__ == "__main__":
     # for i in range(1, 13):
         # print(ht.get(f"line_{i}"))
     
+    for i in range(1, 13):
+        print(ht.hash_index(f"line_{i}"))
+
     for i in range(ht.capacity):
-        print(ht.buckets[i])
+        print(ht.buckets[i].head.key, ht.buckets[i].head.value)
+        print(type(ht.buckets[i]))
 
     # Test resizing
     old_capacity = ht.get_num_slots()
